@@ -47,7 +47,8 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # EC2_HOST 等 Secrets 設定好之前，直接跳過部署（避免每次 push 都顯示失敗）
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.EC2_DEPLOY_ENABLED == 'true'
     environment: production
 
     steps:
