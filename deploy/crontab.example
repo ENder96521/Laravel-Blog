@@ -1,0 +1,7 @@
+# 在 EC2 上用 `crontab -e`（部署用的使用者，例如 www-data 或 deploy）加入以下內容
+
+# Laravel Scheduler：每分鐘觸發一次，實際任務頻率由 routes/console.php 內的排程定義決定
+* * * * * cd /var/www/blog && php artisan schedule:run >> /dev/null 2>&1
+
+# 每週備份（週日凌晨 3 點），保留最近 5 份
+0 3 * * 0 /var/www/blog/deploy/backup.sh >> /var/log/blog-backup.log 2>&1

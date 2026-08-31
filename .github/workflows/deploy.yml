@@ -1,0 +1,62 @@
+name: Test & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安裝 PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, gd, zip, intl, opcache
+          coverage: none
+
+      - name: 安裝 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 準備 .env
+        run: cp .env.example .env
+
+      - name: 安裝 Composer 套件
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: 產生 APP_KEY
+        run: php artisan key:generate
+
+      - name: 安裝前端套件
+        run: npm ci
+
+      - name: Build 前端資源
+        run: npm run build
+
+      - name: 執行測試
+        run: php artisan test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+
+    steps:
+      - name: 透過 SSH 部署到 EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ${{ secrets.EC2_APP_DIR }}
+            bash deploy/deploy.sh

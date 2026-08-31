@@ -1,0 +1,39 @@
+# Laravel 應用本身的 Nginx server block（listen 在 127.0.0.1，只給前面的
+# Nginx Proxy Manager 內部轉發使用，不直接對外）。
+#
+# 用法：複製到 EC2 的 /etc/nginx/sites-available/blog，
+# 再軟連結到 /etc/nginx/sites-enabled/，然後 nginx -t && systemctl reload nginx
+
+server {
+    listen 127.0.0.1:8080;
+    server_name _;
+    root /var/www/blog/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+    charset utf-8;
+
+    client_max_body_size 20m;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # 擋掉 .env、.git 等敏感檔案（.well-known 給憑證驗證用，放行）
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}

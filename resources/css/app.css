@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+@import '@fontsource/archivo/400.css';
+@import '@fontsource/archivo/600.css';
+@import '@fontsource/archivo/800.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* 手動深色模式切換：加在 <html data-theme="dark"> 上覆蓋系統偏好 */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+    --font-heading: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    --color-bg: #f3f2f2;
+    --color-surface: #eae9e9;
+    --color-text: #201e1d;
+    --color-accent: #ec3013;
+    --color-accent-2: #e15b47;
+    --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+
+    --color-neutral-100: #f8f4f4;
+    --color-neutral-200: #eae7e7;
+    --color-neutral-300: #d7d3d3;
+    --color-neutral-400: #bab6b6;
+    --color-neutral-500: #9b9797;
+    --color-neutral-600: #7d7979;
+    --color-neutral-700: #605d5d;
+    --color-neutral-800: #444141;
+    --color-neutral-900: #2d2b2b;
+
+    --color-accent-100: #fff2ef;
+    --color-accent-200: #ffe0d9;
+    --color-accent-300: #ffc4b8;
+    --color-accent-400: #ff9783;
+    --color-accent-500: #ff563c;
+    --color-accent-600: #dd2b0f;
+    --color-accent-700: #ae1800;
+    --color-accent-800: #7c1405;
+    --color-accent-900: #4d170e;
+
+    --color-code-bg: #1c1a1f;
+    --color-code-text: #ece8e6;
+    --color-code-kw: #ff8f79;
+    --color-code-str: #c9c4c0;
+    --color-code-com: #756f6f;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --color-bg: #1a1817;
+        --color-surface: #242020;
+        --color-text: #f1efed;
+        --color-divider: color-mix(in srgb, #f1efed 25%, transparent);
+        --color-code-bg: #242024;
+        --color-code-text: #f1ede9;
+        --color-code-kw: #ff9f8c;
+        --color-code-str: #b8b2b0;
+        --color-code-com: #7d7676;
+    }
+}
+
+:root[data-theme='dark'] {
+    --color-bg: #1a1817;
+    --color-surface: #242020;
+    --color-text: #f1efed;
+    --color-divider: color-mix(in srgb, #f1efed 25%, transparent);
+    --color-code-bg: #242024;
+    --color-code-text: #f1ede9;
+    --color-code-kw: #ff9f8c;
+    --color-code-str: #b8b2b0;
+    --color-code-com: #7d7676;
+}
+
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+}
+
+.prose-fieldnotes {
+    font-family: var(--font-body);
+    line-height: 1.75;
+}
+
+.prose-fieldnotes h2,
+.prose-fieldnotes h3 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+}
+
+.prose-fieldnotes p {
+    margin-bottom: 1.25em;
+}
+
+.prose-fieldnotes a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.prose-fieldnotes pre {
+    background: var(--color-code-bg);
+    color: var(--color-code-text);
+    padding: 1rem 1.25rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+}
+
+.prose-fieldnotes code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+.prose-fieldnotes blockquote {
+    border-left: 2px solid var(--color-divider);
+    padding-left: 1rem;
+    color: color-mix(in srgb, var(--color-text) 75%, transparent);
+    font-style: italic;
+}
+
+.prose-fieldnotes ul,
+.prose-fieldnotes ol {
+    margin: 0 0 1.25em 1.5em;
+}
+
+.prose-fieldnotes img {
+    max-width: 100%;
+    border-radius: 0.375rem;
+}
